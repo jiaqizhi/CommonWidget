@@ -175,6 +175,7 @@ public class CWCamera extends SurfaceView implements Camera.PreviewCallback, Sur
     public void releaseCamera() {
         if (camera != null) {
             CameraUtils.getInstance().releaseCamera();
+            camera = null;
         }
     }
 
