@@ -13,6 +13,7 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import com.huiyuenet.widgetlib.R;
+import com.huiyuenet.widgetlib.logs.LogUtils;
 import com.xuexiang.xutil.display.ImageUtils;
 
 import java.io.ByteArrayOutputStream;
@@ -145,12 +146,11 @@ public class CWCamera extends SurfaceView implements Camera.PreviewCallback, Sur
     /**
      * 启动预览
      */
-    private void startPreview() {
+    public void startPreview() {
         if (camera != null) {
             camera.startPreview();
             camera.setPreviewCallback(this);
             if (isSupportAutoFocus) {
-                //camera.autoFocus(this);
                 postDelayed(this, 2000);
             }
         }
@@ -159,7 +159,7 @@ public class CWCamera extends SurfaceView implements Camera.PreviewCallback, Sur
     /**
      * 停止预览
      */
-    private void stopPreview() {
+    public void stopPreview() {
         if (camera != null) {
             camera.stopPreview();
             camera.setPreviewCallback(null);
@@ -185,11 +185,7 @@ public class CWCamera extends SurfaceView implements Camera.PreviewCallback, Sur
      * @param camerid
      */
     public void changeCamera(int camerid) {
-        stopPreview();
-        releaseCamera();
         this.cameraid = camerid;
-        openCamera();
-        initCamera();
     }
 
     @Override

@@ -4,6 +4,7 @@ import android.app.Application;
 import android.util.Log;
 
 import com.xuexiang.xaop.XAOP;
+import com.xuexiang.xaop.logger.XLogger;
 
 public class MyApp extends Application {
 

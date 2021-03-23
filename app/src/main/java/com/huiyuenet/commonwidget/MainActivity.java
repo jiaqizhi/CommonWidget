@@ -23,9 +23,14 @@ public class MainActivity extends Activity {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
 
         PermissionUtils.permission(Manifest.permission.CAMERA);
+        binding.mainCamera.changeCamera(Camera.CameraInfo.CAMERA_FACING_BACK);
     }
 
     public void changeCamera (View v) {
         binding.mainCamera.changeCamera(binding.mainCamera.getCameraid() == Camera.CameraInfo.CAMERA_FACING_BACK ? Camera.CameraInfo.CAMERA_FACING_FRONT : Camera.CameraInfo.CAMERA_FACING_BACK);
+        binding.mainCamera.stopPreview();
+        binding.mainCamera.releaseCamera();
+        binding.mainCamera.openCamera();
+        binding.mainCamera.initCamera();
     }
 }
