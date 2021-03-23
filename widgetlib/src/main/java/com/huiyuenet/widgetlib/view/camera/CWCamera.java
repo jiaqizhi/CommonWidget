@@ -22,6 +22,7 @@ import androidx.annotation.NonNull;
 
 /**
  * 摄像头组件（预览、拍照、获取帧）
+ *
  * @作者 liuzhiwei
  * @时间 2021/3/8 10:40
  */
@@ -56,19 +57,25 @@ public class CWCamera extends SurfaceView implements Camera.PreviewCallback, Sur
         holder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
     }
 
+    public int getCameraid() {
+        return cameraid;
+    }
+
     /**
      * 设置帧回调
+     *
      * @param previewFrameListener
      */
-    public void setPreviewFrameListener (PreviewFrameListener previewFrameListener) {
+    public void setPreviewFrameListener(PreviewFrameListener previewFrameListener) {
         this.previewFrameListener = previewFrameListener;
     }
 
     /**
      * 设置拍照回调
+     *
      * @param listener
      */
-    public void setCameraPZListener (CameraPZListener listener) {
+    public void setCameraPZListener(CameraPZListener listener) {
         cameraPZListener = listener;
     }
 
@@ -97,7 +104,7 @@ public class CWCamera extends SurfaceView implements Camera.PreviewCallback, Sur
     }
 
     //todo 第一步，创建camera对象，初始化执行一次，此时摄像头被持有
-    public void openCamera () {
+    public void openCamera() {
         try {
             camera = CameraUtils.getInstance().openCamera(cameraid);
         } catch (Exception e) {
@@ -111,7 +118,7 @@ public class CWCamera extends SurfaceView implements Camera.PreviewCallback, Sur
     }
 
     //todo 第二步，初始化摄像头参数  竖屏90    横屏0
-    public void initCamera () {
+    public void initCamera() {
         try {
             camera.setPreviewDisplay(holder);
             //设置最佳预览
@@ -135,7 +142,10 @@ public class CWCamera extends SurfaceView implements Camera.PreviewCallback, Sur
 
     }
 
-    private void startPreview () {
+    /**
+     * 启动预览
+     */
+    private void startPreview() {
         if (camera != null) {
             camera.startPreview();
             camera.setPreviewCallback(this);
@@ -146,7 +156,10 @@ public class CWCamera extends SurfaceView implements Camera.PreviewCallback, Sur
         }
     }
 
-    private void stopPreview () {
+    /**
+     * 停止预览
+     */
+    private void stopPreview() {
         if (camera != null) {
             camera.stopPreview();
             camera.setPreviewCallback(null);
@@ -156,10 +169,26 @@ public class CWCamera extends SurfaceView implements Camera.PreviewCallback, Sur
         }
     }
 
-    public void releaseCamera () {
+    /**
+     * 销毁摄像头
+     */
+    public void releaseCamera() {
         if (camera != null) {
             CameraUtils.getInstance().releaseCamera();
         }
+    }
+
+    /**
+     * 切换摄像头
+     *
+     * @param camerid
+     */
+    public void changeCamera(int camerid) {
+        stopPreview();
+        releaseCamera();
+        this.cameraid = camerid;
+        openCamera();
+        initCamera();
     }
 
     @Override
@@ -206,10 +235,10 @@ public class CWCamera extends SurfaceView implements Camera.PreviewCallback, Sur
     }
 
     public interface PreviewFrameListener {
-        void getImgData (byte[] data, Camera camera);
+        void getImgData(byte[] data, Camera camera);
     }
 
     public interface CameraPZListener {
-        void getPZImg (Bitmap bmp);
+        void getPZImg(Bitmap bmp);
     }
 }
