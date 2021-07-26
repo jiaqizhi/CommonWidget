@@ -1,13 +1,11 @@
 package com.huiyuenet.widgetlib.logs;
 
-import com.xuexiang.xutil.XUtil;
-import com.xuexiang.xutil.common.StringUtils;
-import com.xuexiang.xutil.common.logger.Logger;
-import com.xuexiang.xutil.data.DateUtils;
-import com.xuexiang.xutil.file.FileIOUtils;
-import com.xuexiang.xutil.file.FileUtils;
+import android.os.FileUtils;
+import android.text.format.DateUtils;
+import android.util.Log;
 
 import java.io.File;
+import java.util.logging.Logger;
 
 /**
  * 日志打印类
@@ -18,9 +16,6 @@ public class LogUtils {
     private static String logDir = "";
     private static String TAG = "CW";
     private static boolean saveLog = false;
-    static {
-        Logger.setTag(TAG);
-    }
 
     /**
      * 设置日志的存放路径
@@ -47,12 +42,12 @@ public class LogUtils {
     }
 
     public static void d (String log) {
-        Logger.d(log);
+        Log.d(TAG, log);
         saveLog(log);
     }
 
     public static void e (String log) {
-        Logger.e(log);
+        Log.d(TAG, log);
         saveLog(log);
     }
 
@@ -65,29 +60,29 @@ public class LogUtils {
         if (!saveLog) {
             return false;
         }
-        if (StringUtils.isEmpty(logDir)) {
-            e("日志存放地址为空");
-            return false;
-        }
-        //判断文件是否存在，不存在则创建，创建失败返回false
-        if (!FileUtils.createOrExistsDir(logDir)) {
-            e("文件夹创建失败");
-            return false;
-        }
-        String fileName = DateUtils.date2String(DateUtils.getNowDate(), DateUtils.yyyyMMdd.get())+".txt";
-        String logPath = logDir+ File.separator+fileName;
-
-        //判断文件是否存在并创建
-        if (!FileUtils.createOrExistsFile(logPath)) {
-            e("日志文件创建失败");
-            return false;
-        }
-
-        //判断日志是否写成功
-        if (!FileIOUtils.writeFileFromString(logPath, log, true)) {
-            e("日志写入失败");
-            return false;
-        }
+//        if (StringUtils.isEmpty(logDir)) {
+//            e("日志存放地址为空");
+//            return false;
+//        }
+//        //判断文件是否存在，不存在则创建，创建失败返回false
+//        if (!FileUtils.createOrExistsDir(logDir)) {
+//            e("文件夹创建失败");
+//            return false;
+//        }
+//        String fileName = DateUtils.date2String(DateUtils.getNowDate(), DateUtils.yyyyMMdd.get())+".txt";
+//        String logPath = logDir+ File.separator+fileName;
+//
+//        //判断文件是否存在并创建
+//        if (!FileUtils.createOrExistsFile(logPath)) {
+//            e("日志文件创建失败");
+//            return false;
+//        }
+//
+//        //判断日志是否写成功
+//        if (!FileIOUtils.writeFileFromString(logPath, log, true)) {
+//            e("日志写入失败");
+//            return false;
+//        }
 
         return true;
     }

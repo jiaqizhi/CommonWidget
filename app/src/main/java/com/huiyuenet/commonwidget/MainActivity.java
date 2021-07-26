@@ -10,9 +10,6 @@ import android.os.Bundle;
 import android.view.View;
 
 import com.huiyuenet.commonwidget.databinding.ActivityMainBinding;
-import com.xuexiang.xaop.util.PermissionUtils;
-
-import java.security.Permission;
 
 public class MainActivity extends Activity {
     private ActivityMainBinding binding;
@@ -22,7 +19,6 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
 
-        PermissionUtils.permission(Manifest.permission.CAMERA);
         binding.mainCamera.changeCamera(Camera.CameraInfo.CAMERA_FACING_BACK);
     }
 

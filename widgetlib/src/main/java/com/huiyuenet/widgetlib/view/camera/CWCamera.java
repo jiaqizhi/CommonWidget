@@ -7,6 +7,7 @@ import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.hardware.Camera;
+import android.os.Build;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.view.SurfaceHolder;
@@ -14,7 +15,6 @@ import android.view.SurfaceView;
 
 import com.huiyuenet.widgetlib.R;
 import com.huiyuenet.widgetlib.logs.LogUtils;
-import com.xuexiang.xutil.display.ImageUtils;
 
 import java.io.ByteArrayOutputStream;
 import java.util.List;
@@ -49,7 +49,7 @@ public class CWCamera extends SurfaceView implements Camera.PreviewCallback, Sur
         TypedArray a = this.context.obtainStyledAttributes(attrs, R.styleable.VideoCameraView);
         cameraid = a.getInt(R.styleable.VideoCameraView_camera_id, Camera.CameraInfo.CAMERA_FACING_FRONT);
         holder = getHolder();
-        isSupportAutoFocus = context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_AUTOFOCUS);
+        //isSupportAutoFocus = context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_AUTOFOCUS);
 
         DisplayMetrics dms = context.getResources().getDisplayMetrics();
         screenWidth = dms.heightPixels;
@@ -170,7 +170,7 @@ public class CWCamera extends SurfaceView implements Camera.PreviewCallback, Sur
             camera.stopPreview();
             camera.setPreviewCallback(null);
             if (isSupportAutoFocus) {
-                camera.cancelAutoFocus();
+                //camera.cancelAutoFocus();
             }
         }
     }
