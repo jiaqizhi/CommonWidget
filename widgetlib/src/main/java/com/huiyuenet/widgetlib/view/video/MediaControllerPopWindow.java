@@ -138,6 +138,21 @@ public class MediaControllerPopWindow extends PopupWindow {
         }
     }
 
+    /**
+     * 设置全屏按钮的状态
+     * @param videoIsScreen
+     */
+    public void setScreenStatus (boolean videoIsScreen) {
+        isScreen = videoIsScreen;
+        if (!isScreen) {
+            isScreen = true;
+            screenBtn.setBackgroundResource(R.drawable.exit_full_screen);
+        } else {
+            isScreen = false;
+            screenBtn.setBackgroundResource(R.drawable.full_screen);
+        }
+    }
+
     private void initPopWindow () {
         this.setContentView(view);
         this.setWidth(ViewGroup.LayoutParams.MATCH_PARENT);

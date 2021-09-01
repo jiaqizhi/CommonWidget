@@ -135,8 +135,13 @@ public class VideoPlayView extends FrameLayout implements TextureView.SurfaceTex
      * @param url
      */
     public void playVideo(String url) {
-        this.url = url;
-        handler.sendEmptyMessageDelayed(PLAYVIDEO, 500);
+        if (isSurfaceCreate) {
+            mediaUtils.play(url);
+        } else {
+            this.url = url;
+            handler.sendEmptyMessageDelayed(PLAYVIDEO, 500);
+        }
+
     }
 
     /**
