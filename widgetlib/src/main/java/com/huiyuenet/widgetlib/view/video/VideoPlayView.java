@@ -39,6 +39,7 @@ public class VideoPlayView extends FrameLayout implements TextureView.SurfaceTex
     private boolean popWindowIsShow = false;
     private String url;
     private onVideoSizeChangeListener onVideoSizeChangeListener;
+    private onVideoCompletionListener onVideoCompletionListener;
     private SurfaceTexture mSurface;
 
     /**
@@ -81,6 +82,10 @@ public class VideoPlayView extends FrameLayout implements TextureView.SurfaceTex
         this.onVideoSizeChangeListener = onVideoSizeChangeListener;
     }
 
+    public void setOnVideoCompletionListener(VideoPlayView.onVideoCompletionListener onVideoCompletionListener) {
+        this.onVideoCompletionListener = onVideoCompletionListener;
+    }
+
     public MediaControllerPopWindow getPopWindow() {
         return popWindow;
     }
@@ -91,6 +96,10 @@ public class VideoPlayView extends FrameLayout implements TextureView.SurfaceTex
 
     public TextureView getTextureView() {
         return textureView;
+    }
+
+    public MediaUtils getMediaUtils() {
+        return mediaUtils;
     }
 
     public VideoPlayView(@NonNull Context context) {
@@ -139,7 +148,9 @@ public class VideoPlayView extends FrameLayout implements TextureView.SurfaceTex
         mediaUtils.setOnVideoCompleteListener(new MediaUtils.OnVideoCompleteListener() {
             @Override
             public void onVideoComplete() {
-
+                if (onVideoCompletionListener != null) {
+                    onVideoCompletionListener.onVideoCompletion();
+                }
             }
         });
 
@@ -178,6 +189,22 @@ public class VideoPlayView extends FrameLayout implements TextureView.SurfaceTex
                 popWindowIsShow = false;
             }
         });
+    }
+
+    public void startVideo () {
+        mediaUtils.start();
+    }
+
+    public void pauseVideo () {
+        mediaUtils.pause();
+    }
+
+    public void stopVideo () {
+        mediaUtils.stop();
+    }
+
+    public void releaseVideo () {
+        mediaUtils.release();
     }
 
     public void fullScreen () {
@@ -274,5 +301,8 @@ public class VideoPlayView extends FrameLayout implements TextureView.SurfaceTex
         void onVideoSizeChange(int width, int height);
     }
 
+    public interface onVideoCompletionListener {
+        void onVideoCompletion();
+    }
 
 }
