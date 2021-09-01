@@ -41,6 +41,15 @@ public class VideoPlayView extends FrameLayout implements TextureView.SurfaceTex
     private onVideoSizeChangeListener onVideoSizeChangeListener;
     private onVideoCompletionListener onVideoCompletionListener;
     private SurfaceTexture mSurface;
+    /**
+     * 全屏
+     */
+    public final static int FULLSCREEN = 0;
+    /**
+     * 小屏
+     */
+    public final static int SMALLSCREEN = 1;
+    private int screenStatus = SMALLSCREEN;
 
     /**
      * 控制器显示时间
@@ -84,6 +93,10 @@ public class VideoPlayView extends FrameLayout implements TextureView.SurfaceTex
 
     public void setOnVideoCompletionListener(VideoPlayView.onVideoCompletionListener onVideoCompletionListener) {
         this.onVideoCompletionListener = onVideoCompletionListener;
+    }
+
+    public int getScreenStatus() {
+        return screenStatus;
     }
 
     public MediaControllerPopWindow getPopWindow() {
@@ -181,7 +194,7 @@ public class VideoPlayView extends FrameLayout implements TextureView.SurfaceTex
             public void onClick(View v) {
                 if (!popWindowIsShow)  {
                     popWindowIsShow = true;
-                    popWindow.show(view);
+                    popWindow.show(textureView);
                     handler.sendEmptyMessageDelayed(POPWINDOWSSHOWTIME, 1000);
                 }
             }
@@ -213,6 +226,7 @@ public class VideoPlayView extends FrameLayout implements TextureView.SurfaceTex
     }
 
     public void fullScreen () {
+        screenStatus = FULLSCREEN;
         ViewGroup viewGroup = (ViewGroup) textureView.getParent();
         viewGroup.removeView(textureView);
         Activity ac = (Activity)mContext;
@@ -220,15 +234,18 @@ public class VideoPlayView extends FrameLayout implements TextureView.SurfaceTex
         ac.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         contentView.addView(textureView, params);
+        popWindow.setScreenStatus(true);
     }
 
     public void exitFullScreen () {
+        screenStatus = SMALLSCREEN;
         Activity ac = (Activity)mContext;
         ViewGroup contentView = ac.findViewById(android.R.id.content);
         ac.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         contentView.removeView(textureView);
         ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         view.addView(textureView, params);
+        popWindow.setScreenStatus(false);
     }
 
     /**

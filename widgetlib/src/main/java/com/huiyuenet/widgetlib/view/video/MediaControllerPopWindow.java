@@ -32,7 +32,6 @@ public class MediaControllerPopWindow extends PopupWindow {
     private ProgressBar videoProgress;
     private View view;
     private VideoPlayView mVideoPlayView;
-    private boolean isScreen = false;
 
     public ImageButton getPlayBtn() {
         return playBtn;
@@ -112,14 +111,10 @@ public class MediaControllerPopWindow extends PopupWindow {
         this.screenBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!isScreen) {
+                if (mVideoPlayView.getScreenStatus() == VideoPlayView.SMALLSCREEN) {
                     mVideoPlayView.fullScreen();
-                    isScreen = true;
-                    screenBtn.setBackgroundResource(R.drawable.exit_full_screen);
                 } else {
                     mVideoPlayView.exitFullScreen();
-                    isScreen = false;
-                    screenBtn.setBackgroundResource(R.drawable.full_screen);
                 }
             }
         });
@@ -143,12 +138,9 @@ public class MediaControllerPopWindow extends PopupWindow {
      * @param videoIsScreen
      */
     public void setScreenStatus (boolean videoIsScreen) {
-        isScreen = videoIsScreen;
-        if (!isScreen) {
-            isScreen = true;
+        if (!videoIsScreen) {
             screenBtn.setBackgroundResource(R.drawable.exit_full_screen);
         } else {
-            isScreen = false;
             screenBtn.setBackgroundResource(R.drawable.full_screen);
         }
     }
