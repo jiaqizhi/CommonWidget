@@ -83,8 +83,10 @@ public class MediaUtils implements MediaPlayer.OnVideoSizeChangedListener, Media
     private int mPercent;
 
     public static MediaUtils getInstance () {
-
-        return mediaUtils == null ? new MediaUtils() : mediaUtils;
+        if (mediaUtils == null) {
+            mediaUtils = new MediaUtils();
+        }
+        return mediaUtils;
     }
 
     /**
@@ -106,7 +108,7 @@ public class MediaUtils implements MediaPlayer.OnVideoSizeChangedListener, Media
     public void setSurface (Surface surface) {
         if (mediaPlayer == null) {
             mediaPlayer = new MediaPlayer();
-
+            mediaPlayer.setScreenOnWhilePlaying(true);//屏幕常亮
         }
         initMediaPlayerListener();
         mediaPlayer.setSurface(surface);

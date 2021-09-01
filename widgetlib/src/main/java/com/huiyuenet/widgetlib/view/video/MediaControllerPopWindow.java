@@ -31,6 +31,8 @@ public class MediaControllerPopWindow extends PopupWindow {
     private TextView videoTime;
     private ProgressBar videoProgress;
     private View view;
+    private VideoPlayView mVideoPlayView;
+    private boolean isScreen = false;
 
     public ImageButton getPlayBtn() {
         return playBtn;
@@ -40,10 +42,11 @@ public class MediaControllerPopWindow extends PopupWindow {
         return screenBtn;
     }
 
-    public MediaControllerPopWindow (Context context, MediaUtils mediaUtils) {
+    public MediaControllerPopWindow (Context context, MediaUtils mediaUtils, VideoPlayView videoPlayView) {
         super(context);
         mContext = context;
         mMediaUtils = mediaUtils;
+        mVideoPlayView = videoPlayView;
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         view = inflater.inflate(R.layout.layout_media_controller_pop, null);
         this.playBtn = view.findViewById(R.id.play_btn);
@@ -109,7 +112,15 @@ public class MediaControllerPopWindow extends PopupWindow {
         this.screenBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                if (!isScreen) {
+                    mVideoPlayView.fullScreen();
+                    isScreen = true;
+                    screenBtn.setBackgroundResource(R.drawable.exit_full_screen);
+                } else {
+                    mVideoPlayView.exitFullScreen();
+                    isScreen = false;
+                    screenBtn.setBackgroundResource(R.drawable.full_screen);
+                }
             }
         });
 
@@ -143,4 +154,6 @@ public class MediaControllerPopWindow extends PopupWindow {
 
         this.showAtLocation(v, Gravity.BOTTOM, 0, 0);
     }
+
+
 }

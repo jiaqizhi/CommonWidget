@@ -1,6 +1,8 @@
 package com.huiyuenet.widgetlib.view.video;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.pm.ActivityInfo;
 import android.graphics.Matrix;
 import android.graphics.SurfaceTexture;
 import android.media.MediaPlayer;
@@ -11,7 +13,9 @@ import android.view.LayoutInflater;
 import android.view.Surface;
 import android.view.TextureView;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 
 import com.huiyuenet.widgetlib.R;
@@ -29,13 +33,13 @@ import androidx.annotation.Nullable;
 public class VideoPlayView extends FrameLayout implements TextureView.SurfaceTextureListener {
     private TextureView textureView;
     private Context mContext;
-    private View view;
+    private FrameLayout view;
     private MediaUtils mediaUtils;
     private MediaControllerPopWindow popWindow;
     private boolean popWindowIsShow = false;
     private String url;
     private onVideoSizeChangeListener onVideoSizeChangeListener;
-    private Surface mSurface;
+    private SurfaceTexture mSurface;
 
     /**
      * 控制器显示时间
@@ -64,7 +68,7 @@ public class VideoPlayView extends FrameLayout implements TextureView.SurfaceTex
                 }
             } else if (msg.what == PLAYVIDEO) {
                 if (isSurfaceCreate) {
-                    mediaUtils.setSurface(mSurface);
+                    mediaUtils.setSurface(new Surface(mSurface));
                     mediaUtils.play(url);
                 } else {
                     sendEmptyMessageDelayed(PLAYVIDEO, 500);
@@ -81,6 +85,14 @@ public class VideoPlayView extends FrameLayout implements TextureView.SurfaceTex
         return popWindow;
     }
 
+    public View getView() {
+        return view;
+    }
+
+    public TextureView getTextureView() {
+        return textureView;
+    }
+
     public VideoPlayView(@NonNull Context context) {
         super(context);
     }
@@ -89,21 +101,38 @@ public class VideoPlayView extends FrameLayout implements TextureView.SurfaceTex
         super(context, attrs);
         mContext = context;
         LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        view = inflater.inflate(R.layout.layout_video_play, this, true);
+//        view = inflater.inflate(R.layout.layout_video_play, this, true);
+//
+//        textureView = view.findViewById(R.id.textureView);
 
-        textureView = view.findViewById(R.id.textureView);
+        view = new FrameLayout(mContext);
+        textureView = new TextureView(mContext);
+
+        LayoutParams params = new FrameLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+        view.addView(textureView, params);
+
+        this.addView(view, params);
+
         mediaUtils = MediaUtils.getInstance();
-        popWindow = new MediaControllerPopWindow(context, mediaUtils);
+        popWindow = new MediaControllerPopWindow(mContext, mediaUtils, this);
         setOnListener();
+
+        this.setKeepScreenOn(true);
     }
 
 
-
+    /**
+     * 播放视频
+     * @param url
+     */
     public void playVideo(String url) {
         this.url = url;
         handler.sendEmptyMessageDelayed(PLAYVIDEO, 500);
     }
 
+    /**
+     * 设置监听
+     */
     private void setOnListener() {
         textureView.setSurfaceTextureListener(this);
 
@@ -151,6 +180,30 @@ public class VideoPlayView extends FrameLayout implements TextureView.SurfaceTex
         });
     }
 
+    public void fullScreen () {
+        ViewGroup viewGroup = (ViewGroup) textureView.getParent();
+        viewGroup.removeView(textureView);
+        Activity ac = (Activity)mContext;
+        ViewGroup contentView = ac.findViewById(android.R.id.content);
+        ac.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+        ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        contentView.addView(textureView, params);
+    }
+
+    public void exitFullScreen () {
+        Activity ac = (Activity)mContext;
+        ViewGroup contentView = ac.findViewById(android.R.id.content);
+        ac.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        contentView.removeView(textureView);
+        ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        view.addView(textureView, params);
+    }
+
+    /**
+     * 按比例缩放视频控件
+     * @param videoWidth
+     * @param videoHeight
+     */
     public void stretching (float videoWidth, float videoHeight) {
         int viewWidth = getWidth();
         int viewHeight = getHeight();
@@ -180,33 +233,35 @@ public class VideoPlayView extends FrameLayout implements TextureView.SurfaceTex
 
     @Override
     public void onSurfaceTextureAvailable(@NonNull SurfaceTexture surface, int width, int height) {
-        LogUtils.d("----------------------------------onSurfaceTextureAvailable");
-        if (mediaUtils == null) {
-            return;
+//        LogUtils.d("----------------------------------onSurfaceTextureAvailable");
+        if (mSurface == null) {
+            mSurface = surface;
+            isSurfaceCreate = true;
+        } else {
+            textureView.setSurfaceTexture(mSurface);
         }
-        mSurface = new Surface(surface);
-        isSurfaceCreate = true;
+
 
     }
 
     @Override
     public void onSurfaceTextureSizeChanged(@NonNull SurfaceTexture surface, int width, int height) {
-        LogUtils.d("----------------------------------onSurfaceTextureSizeChanged");
+//        LogUtils.d("----------------------------------onSurfaceTextureSizeChanged");
     }
 
     @Override
     public boolean onSurfaceTextureDestroyed(@NonNull SurfaceTexture surface) {
-        LogUtils.d("----------------------------------onSurfaceTextureDestroyed");
-        if (mediaUtils != null) {
-            mediaUtils.release();
-            mediaUtils = null;
-        }
+//        LogUtils.d("----------------------------------onSurfaceTextureDestroyed");
+//        if (mediaUtils != null) {
+//            mediaUtils.release();
+//            mediaUtils = null;
+//        }
         return false;
     }
 
     @Override
     public void onSurfaceTextureUpdated(@NonNull SurfaceTexture surface) {
-        LogUtils.d("----------------------------------onSurfaceTextureUpdated");
+//        LogUtils.d("----------------------------------onSurfaceTextureUpdated");
     }
 
     @Override
@@ -218,4 +273,6 @@ public class VideoPlayView extends FrameLayout implements TextureView.SurfaceTex
     public interface onVideoSizeChangeListener {
         void onVideoSizeChange(int width, int height);
     }
+
+
 }

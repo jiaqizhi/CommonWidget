@@ -8,6 +8,7 @@ import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.view.Display;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 
 import com.huiyuenet.commonwidget.databinding.ActivityVideoTestBinding;
@@ -22,23 +23,25 @@ public class VideoTestActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_video_test);
-//        binding.video.playVideo("http://video.huiyuenet.cn/sv/2deb74cc-177c861ef6b/2deb74cc-177c861ef6b.mp4");
-        binding.video.playVideo("http://video.huiyuenet.cn/sv/267869f4-17b2f7fc176/267869f4-17b2f7fc176.mp4");
+        binding.video.playVideo("http://video.huiyuenet.cn/sv/2deb74cc-177c861ef6b/2deb74cc-177c861ef6b.mp4");
+//        binding.video.playVideo("http://video.huiyuenet.cn/sv/267869f4-17b2f7fc176/267869f4-17b2f7fc176.mp4");
         binding.video.setOnVideoSizeChangeListener(new VideoPlayView.onVideoSizeChangeListener() {
             @Override
             public void onVideoSizeChange(int width, int height) {
                 videoWidth = width;
                 videoHeight = height;
-                if (width > height) {
-                    if (ScreenOrient(VideoTestActivity.this) != ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
-                        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-                    }
-
-                }
             }
         });
 
-        binding.video.getPopWindow().getScreenBtn().setVisibility(View.GONE);
+        //binding.video.getPopWindow().getScreenBtn().setVisibility(View.GONE);
+    }
+
+    public void btnClick (View v) {
+        if (videoWidth > videoHeight) {
+            if (ScreenOrient(VideoTestActivity.this) != ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
+                //binding.video.removePlayView();
+            }
+        }
     }
 
 
