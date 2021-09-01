@@ -2,8 +2,10 @@ package com.huiyuenet.widgetlib.view.video;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.media.MediaPlayer;
+import android.os.Build;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -98,6 +100,7 @@ public class MediaControllerPopWindow extends PopupWindow {
         this.playBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 if (mMediaUtils.isPlaying()) {
                     mMediaUtils.pause();
                     playBtn.setBackgroundResource(R.drawable.play);
@@ -105,12 +108,14 @@ public class MediaControllerPopWindow extends PopupWindow {
                     mMediaUtils.start();
                     playBtn.setBackgroundResource(R.drawable.pause);
                 }
+
             }
         });
 
         this.screenBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                dismiss();
                 if (mVideoPlayView.getScreenStatus() == VideoPlayView.SMALLSCREEN) {
                     mVideoPlayView.fullScreen();
                 } else {
@@ -139,9 +144,9 @@ public class MediaControllerPopWindow extends PopupWindow {
      */
     public void setScreenStatus (boolean videoIsScreen) {
         if (!videoIsScreen) {
-            screenBtn.setBackgroundResource(R.drawable.exit_full_screen);
-        } else {
             screenBtn.setBackgroundResource(R.drawable.full_screen);
+        } else {
+            screenBtn.setBackgroundResource(R.drawable.exit_full_screen);
         }
     }
 
@@ -151,6 +156,7 @@ public class MediaControllerPopWindow extends PopupWindow {
         this.setHeight(100);
         this.setFocusable(true);
         this.setOutsideTouchable(true);
+        this.setBackgroundDrawable(new ColorDrawable(0));//消除黑边框
 
 //        ColorDrawable dw = new ColorDrawable(0x00FFFFFF);
 //        this.setBackgroundDrawable(dw);
@@ -158,9 +164,12 @@ public class MediaControllerPopWindow extends PopupWindow {
     }
 
     public void show (View v) {
-
-        this.showAtLocation(v, Gravity.BOTTOM, 0, 0);
+        int[] local = new int[2];
+        v.getLocationOnScreen(local);
+        this.setWidth(v.getWidth());
+        int y = v.getHeight()-this.getHeight();
+        LogUtils.d("y========================="+y);
+        this.showAtLocation(v, Gravity.NO_GRAVITY, local[0], y+local[1]);
+        //this.dismiss();
     }
-
-
 }

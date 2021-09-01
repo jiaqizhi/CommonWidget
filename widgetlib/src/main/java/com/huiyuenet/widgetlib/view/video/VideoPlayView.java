@@ -3,6 +3,7 @@ package com.huiyuenet.widgetlib.view.video;
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
+import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.SurfaceTexture;
 import android.media.MediaPlayer;
@@ -41,6 +42,10 @@ public class VideoPlayView extends FrameLayout implements TextureView.SurfaceTex
     private onVideoSizeChangeListener onVideoSizeChangeListener;
     private onVideoCompletionListener onVideoCompletionListener;
     private SurfaceTexture mSurface;
+
+    private int videoWidth;
+    private int videoHeight;
+
     /**
      * 全屏
      */
@@ -128,6 +133,7 @@ public class VideoPlayView extends FrameLayout implements TextureView.SurfaceTex
 //        textureView = view.findViewById(R.id.textureView);
 
         view = new FrameLayout(mContext);
+        view.setBackgroundColor(Color.BLACK);
         textureView = new TextureView(mContext);
 
         LayoutParams params = new FrameLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
@@ -182,10 +188,12 @@ public class VideoPlayView extends FrameLayout implements TextureView.SurfaceTex
         mediaUtils.setOnVideoSizeChangeListener(new MediaUtils.onVideoSizeChangeListener() {
             @Override
             public void onVideoSizeChange(int width, int height) {
+                videoWidth = width;
+                videoHeight = height;
                 if (onVideoSizeChangeListener != null) {
                     onVideoSizeChangeListener.onVideoSizeChange(width, height);
                 }
-                //stretching(width, height);
+                stretching(width, height);
             }
         });
 
@@ -235,6 +243,7 @@ public class VideoPlayView extends FrameLayout implements TextureView.SurfaceTex
         ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         contentView.addView(textureView, params);
         popWindow.setScreenStatus(true);
+        stretching(videoWidth, videoHeight);
     }
 
     public void exitFullScreen () {
@@ -246,6 +255,7 @@ public class VideoPlayView extends FrameLayout implements TextureView.SurfaceTex
         ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         view.addView(textureView, params);
         popWindow.setScreenStatus(false);
+        stretching(videoWidth, videoHeight);
     }
 
     /**
