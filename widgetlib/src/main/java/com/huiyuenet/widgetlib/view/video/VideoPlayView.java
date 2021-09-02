@@ -194,7 +194,7 @@ public class VideoPlayView extends FrameLayout implements TextureView.SurfaceTex
                 if (onVideoSizeChangeListener != null) {
                     onVideoSizeChangeListener.onVideoSizeChange(width, height);
                 }
-                stretching(width, height, VideoPlayView.this);
+                stretching(width, height, VideoPlayView.this, ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
             }
         });
 
@@ -246,7 +246,7 @@ public class VideoPlayView extends FrameLayout implements TextureView.SurfaceTex
         //textureView.setTransform(null);
         contentView.addView(view, params);
         popWindow.setScreenStatus(true);
-        stretching(videoWidth, videoHeight, contentView);
+        stretching(videoWidth, videoHeight, contentView, ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
     }
 
     public void exitFullScreen() {
@@ -258,22 +258,21 @@ public class VideoPlayView extends FrameLayout implements TextureView.SurfaceTex
         ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         this.addView(view, params);
         popWindow.setScreenStatus(false);
-        stretching(videoWidth, videoHeight, this);
+        stretching(videoWidth, videoHeight, this, ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
     }
 
     /**
      * 按比例缩放视频控件
-     *
      * @param videoWidth
      * @param videoHeight
+     * @param rootView
+     * @param screen 屏幕方向
      */
-    public void stretching(float videoWidth, float videoHeight, View rootView) {
+    public void stretching(float videoWidth, float videoHeight, View rootView, int screen) {
         int viewWidth = rootView.getWidth();
         int viewHeight = rootView.getHeight();
 
-        Activity ac = (Activity) mContext;
-        int orient = ac.getRequestedOrientation();
-        if (orient == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
+        if (screen == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
             viewWidth = rootView.getHeight();
             viewHeight = rootView.getWidth();
         }
