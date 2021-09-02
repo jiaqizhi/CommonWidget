@@ -270,6 +270,13 @@ public class VideoPlayView extends FrameLayout implements TextureView.SurfaceTex
     public void stretching(float videoWidth, float videoHeight, View rootView) {
         int viewWidth = rootView.getWidth();
         int viewHeight = rootView.getHeight();
+
+        Activity ac = (Activity) mContext;
+        int orient = ac.getRequestedOrientation();
+        if (orient == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
+            viewWidth = rootView.getHeight();
+            viewHeight = rootView.getWidth();
+        }
         Matrix matrix = new Matrix();
         //获得最佳缩放比
         float sx = viewWidth / videoWidth;
@@ -280,7 +287,7 @@ public class VideoPlayView extends FrameLayout implements TextureView.SurfaceTex
         matrix.preScale(sx1, sy1);
 
         //判断最佳比例，满足一遍能够填满
-        if (sx >= sy) {
+        if (videoWidth <= videoHeight) {
             matrix.preScale(sy, sy);
 //            float dy = (viewWidth - viewWidth * sy) / 2;
 //            LogUtils.d("-----------------------------------------------viewWidth="+viewWidth+",viewWidth * sy="+(viewWidth * sy) + ",dy="+dy + ",videoWidth="+videoWidth);

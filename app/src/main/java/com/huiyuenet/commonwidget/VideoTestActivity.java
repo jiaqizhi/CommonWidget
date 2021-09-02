@@ -24,7 +24,8 @@ public class VideoTestActivity extends Activity {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_video_test);
 //        binding.video.playVideo("http://video.huiyuenet.cn/sv/2deb74cc-177c861ef6b/2deb74cc-177c861ef6b.mp4");
-        binding.video.playVideo("http://video.huiyuenet.cn/sv/267869f4-17b2f7fc176/267869f4-17b2f7fc176.mp4");
+        binding.video.playVideo("http://online-training.oss-cn-beijing.aliyuncs.com/huixin/1615451289741441433.mp4");
+//        binding.video.playVideo("http://video.huiyuenet.cn/sv/267869f4-17b2f7fc176/267869f4-17b2f7fc176.mp4");
 //        binding.video.playVideo("http://video.huiyuenet.cn/sv/287e0510-17b2f8b4bcb/287e0510-17b2f8b4bcb.mp4");
         binding.video.setOnVideoSizeChangeListener(new VideoPlayView.onVideoSizeChangeListener() {
             @Override
