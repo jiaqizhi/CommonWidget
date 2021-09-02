@@ -123,6 +123,7 @@ public class MediaUtils implements MediaPlayer.OnVideoSizeChangedListener, Media
             mediaPlayer.stop();
         }
         try {
+            mediaPlayer.reset();
             mediaPlayer.setDataSource(url);
             mediaPlayer.prepareAsync();
         } catch (IOException e) {

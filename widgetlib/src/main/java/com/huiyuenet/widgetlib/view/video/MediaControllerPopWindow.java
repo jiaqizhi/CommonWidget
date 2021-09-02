@@ -168,7 +168,7 @@ public class MediaControllerPopWindow extends PopupWindow {
         v.getLocationOnScreen(local);
         this.setWidth(v.getWidth());
         int y = v.getHeight()-this.getHeight();
-        LogUtils.d("y========================="+y);
+        //LogUtils.d("y========================="+y);
         this.showAtLocation(v, Gravity.NO_GRAVITY, local[0], y+local[1]);
         //this.dismiss();
     }

@@ -67,7 +67,7 @@ public class VideoPlayView extends FrameLayout implements TextureView.SurfaceTex
     private final static int PLAYVIDEO = 2;
     private boolean isSurfaceCreate = false;
 
-    private Handler handler = new Handler(){
+    private Handler handler = new Handler() {
         @Override
         public void handleMessage(@NonNull Message msg) {
             if (msg.what == POPWINDOWSSHOWTIME) {
@@ -151,6 +151,7 @@ public class VideoPlayView extends FrameLayout implements TextureView.SurfaceTex
 
     /**
      * 播放视频
+     *
      * @param url
      */
     public void playVideo(String url) {
@@ -193,14 +194,14 @@ public class VideoPlayView extends FrameLayout implements TextureView.SurfaceTex
                 if (onVideoSizeChangeListener != null) {
                     onVideoSizeChangeListener.onVideoSizeChange(width, height);
                 }
-                stretching(width, height);
+                stretching(width, height, VideoPlayView.this);
             }
         });
 
         textureView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!popWindowIsShow)  {
+                if (!popWindowIsShow) {
                     popWindowIsShow = true;
                     popWindow.show(textureView);
                     handler.sendEmptyMessageDelayed(POPWINDOWSSHOWTIME, 1000);
@@ -217,55 +218,58 @@ public class VideoPlayView extends FrameLayout implements TextureView.SurfaceTex
         });
     }
 
-    public void startVideo () {
+    public void startVideo() {
         mediaUtils.start();
     }
 
-    public void pauseVideo () {
+    public void pauseVideo() {
         mediaUtils.pause();
     }
 
-    public void stopVideo () {
+    public void stopVideo() {
         mediaUtils.stop();
     }
 
-    public void releaseVideo () {
+    public void releaseVideo() {
         mediaUtils.release();
     }
 
-    public void fullScreen () {
+    public void fullScreen() {
         screenStatus = FULLSCREEN;
-        ViewGroup viewGroup = (ViewGroup) textureView.getParent();
-        viewGroup.removeView(textureView);
-        Activity ac = (Activity)mContext;
+        ViewGroup viewGroup = (ViewGroup) view.getParent();
+        viewGroup.removeView(view);
+        Activity ac = (Activity) mContext;
         ViewGroup contentView = ac.findViewById(android.R.id.content);
-        ac.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+        if (videoWidth > videoHeight)
+            ac.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        contentView.addView(textureView, params);
+        //textureView.setTransform(null);
+        contentView.addView(view, params);
         popWindow.setScreenStatus(true);
-        stretching(videoWidth, videoHeight);
+        stretching(videoWidth, videoHeight, contentView);
     }
 
-    public void exitFullScreen () {
+    public void exitFullScreen() {
         screenStatus = SMALLSCREEN;
-        Activity ac = (Activity)mContext;
+        Activity ac = (Activity) mContext;
         ViewGroup contentView = ac.findViewById(android.R.id.content);
         ac.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        contentView.removeView(textureView);
+        contentView.removeView(view);
         ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        view.addView(textureView, params);
+        this.addView(view, params);
         popWindow.setScreenStatus(false);
-        stretching(videoWidth, videoHeight);
+        stretching(videoWidth, videoHeight, this);
     }
 
     /**
      * 按比例缩放视频控件
+     *
      * @param videoWidth
      * @param videoHeight
      */
-    public void stretching (float videoWidth, float videoHeight) {
-        int viewWidth = getWidth();
-        int viewHeight = getHeight();
+    public void stretching(float videoWidth, float videoHeight, View rootView) {
+        int viewWidth = rootView.getWidth();
+        int viewHeight = rootView.getHeight();
         Matrix matrix = new Matrix();
         //获得最佳缩放比
         float sx = viewWidth / videoWidth;
@@ -278,10 +282,15 @@ public class VideoPlayView extends FrameLayout implements TextureView.SurfaceTex
         //判断最佳比例，满足一遍能够填满
         if (sx >= sy) {
             matrix.preScale(sy, sy);
-            float leftX = (viewWidth - viewWidth * sy) / 2;
-            matrix.postTranslate(0, leftX);
+//            float dy = (viewWidth - viewWidth * sy) / 2;
+//            LogUtils.d("-----------------------------------------------viewWidth="+viewWidth+",viewWidth * sy="+(viewWidth * sy) + ",dy="+dy + ",videoWidth="+videoWidth);
+            float dx = (viewWidth - videoWidth) / 2;
+            if (videoWidth < viewWidth) {
+                dx = (viewWidth - videoWidth*sy) / 2;
+            }
+            matrix.postTranslate(dx, 0);
         } else {
-            matrix.postScale(sx,sx);
+            matrix.postScale(sx, sx);
             float leftY = (viewHeight - videoHeight * sx) / 2;
             matrix.postTranslate(0, leftY);
         }
