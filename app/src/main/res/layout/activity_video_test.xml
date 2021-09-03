@@ -13,10 +13,39 @@
         android:orientation="vertical">
 
         <Button
+            android:id="@+id/hxkc"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:onClick="btnClick"
-            android:text="全屏"/>
+            android:text="慧学课程"/>
+
+        <Button
+            android:id="@+id/budaizimu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="btnClick"
+            android:text="不带字幕横屏"/>
+
+        <Button
+            android:id="@+id/small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="btnClick"
+            android:text="小尺寸竖屏"/>
+
+        <Button
+            android:id="@+id/big"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="btnClick"
+            android:text="大尺寸竖屏"/>
+
+        <Button
+            android:id="@+id/daizimu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="btnClick"
+            android:text="带字幕横屏"/>
 
         <RelativeLayout
             android:layout_width="match_parent"

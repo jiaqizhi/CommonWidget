@@ -62,6 +62,10 @@ public class CWCamera extends SurfaceView implements Camera.PreviewCallback, Sur
         return cameraid;
     }
 
+    public Camera getCamera() {
+        return camera;
+    }
+
     /**
      * 设置帧回调
      *
@@ -97,7 +101,7 @@ public class CWCamera extends SurfaceView implements Camera.PreviewCallback, Sur
                 Bitmap bmp = ImageUtils.bytes2Bitmap(data);
 
                 //前置摄像头时，需要将照片旋转180度
-                if (cameraid == Camera.CameraInfo.CAMERA_FACING_FRONT){
+                if (cameraid == Camera.CameraInfo.CAMERA_FACING_FRONT) {
                     bmp = ImageUtils.rotate(bmp, 180, 0, 0);
                 }
 

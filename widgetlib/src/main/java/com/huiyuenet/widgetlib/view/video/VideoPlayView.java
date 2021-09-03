@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
+import android.widget.RelativeLayout;
 
 import com.huiyuenet.widgetlib.R;
 import com.huiyuenet.widgetlib.logs.LogUtils;
@@ -45,6 +46,8 @@ public class VideoPlayView extends FrameLayout implements TextureView.SurfaceTex
 
     private int videoWidth;
     private int videoHeight;
+
+    private int statusBarHeight = 0;
 
     /**
      * 全屏
@@ -146,6 +149,11 @@ public class VideoPlayView extends FrameLayout implements TextureView.SurfaceTex
         setOnListener();
 
         this.setKeepScreenOn(true);
+
+        int resourceId = mContext.getResources().getIdentifier("status_bar_height", "dimen", "android");
+        if (resourceId > 0) {
+            statusBarHeight = getResources().getDimensionPixelSize(resourceId);
+        }
     }
 
 
@@ -194,7 +202,6 @@ public class VideoPlayView extends FrameLayout implements TextureView.SurfaceTex
                 if (onVideoSizeChangeListener != null) {
                     onVideoSizeChangeListener.onVideoSizeChange(width, height);
                 }
-                stretching(width, height, VideoPlayView.this, ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
             }
         });
 
@@ -243,10 +250,13 @@ public class VideoPlayView extends FrameLayout implements TextureView.SurfaceTex
         if (videoWidth > videoHeight)
             ac.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        //textureView.setTransform(null);
         contentView.addView(view, params);
         popWindow.setScreenStatus(true);
-        stretching(videoWidth, videoHeight, contentView, ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+        if (videoWidth > videoHeight)
+            stretching(videoWidth, videoHeight, contentView, ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+        else {
+            stretching(videoWidth, videoHeight, contentView, ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        }
     }
 
     public void exitFullScreen() {
@@ -272,10 +282,14 @@ public class VideoPlayView extends FrameLayout implements TextureView.SurfaceTex
         int viewWidth = rootView.getWidth();
         int viewHeight = rootView.getHeight();
 
+
+
         if (screen == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
             viewWidth = rootView.getHeight();
             viewHeight = rootView.getWidth();
         }
+        LogUtils.d("viewWidth="+viewWidth+", viewHeight="+viewHeight);
+
         Matrix matrix = new Matrix();
         //获得最佳缩放比
         float sx = viewWidth / videoWidth;
@@ -285,25 +299,41 @@ public class VideoPlayView extends FrameLayout implements TextureView.SurfaceTex
         float sy1 = videoHeight / viewHeight;
         matrix.preScale(sx1, sy1);
 
+        float dx = 0;
+        float dy = 0;
         //判断最佳比例，满足一遍能够填满
         if (videoWidth <= videoHeight) {
-            matrix.preScale(sy, sy);
-//            float dy = (viewWidth - viewWidth * sy) / 2;
-//            LogUtils.d("-----------------------------------------------viewWidth="+viewWidth+",viewWidth * sy="+(viewWidth * sy) + ",dy="+dy + ",videoWidth="+videoWidth);
-            float dx = (viewWidth - videoWidth) / 2;
-            if (videoWidth < viewWidth) {
+
+            if (viewWidth < viewHeight) {//竖屏视频以短边为基准进行缩放
+                matrix.preScale(sx, sx);
+                dx = (viewWidth - videoWidth*sx) / 2;
+                dy = (viewHeight - videoHeight*sx) / 2;
+            } else {
+                matrix.preScale(sy, sy);
                 dx = (viewWidth - videoWidth*sy) / 2;
+                dy = (viewHeight - videoHeight*sy) / 2;
             }
-            matrix.postTranslate(dx, 0);
+            matrix.postTranslate(dx, dy);
         } else {
-            matrix.postScale(sx, sx);
-            float leftY = (viewHeight - videoHeight * sx) / 2;
-            matrix.postTranslate(0, leftY);
+//            if (viewWidth > viewHeight) {//以短边为基准进行缩放
+//                matrix.postScale(sx, sx);
+//                dy = (viewHeight - videoHeight * sx) / 2;
+//                dx = (viewWidth - videoWidth*sx) / 2;
+//            } else {
+//                matrix.postScale(sy, sy);
+//                dy = (viewHeight - videoHeight * sy) / 2;
+//                dx = (viewWidth - videoWidth*sy) / 2;
+//            }
+
+            matrix.postScale(sy, sy);
+            dy = (viewHeight - videoHeight * sy) / 2;
+            dx = (viewWidth - videoWidth*sy) / 2;
+
+            matrix.postTranslate(dx, dy);
         }
         textureView.setTransform(matrix);
         textureView.postInvalidate();
     }
-
 
     @Override
     public void onSurfaceTextureAvailable(@NonNull SurfaceTexture surface, int width, int height) {
