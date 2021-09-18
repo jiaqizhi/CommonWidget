@@ -160,6 +160,10 @@ public class CWCamera extends SurfaceView implements Camera.PreviewCallback, Sur
 
     }
 
+    public Camera.Size getPreviewSize () {
+        return CameraUtils.getInstance().getPreSize();
+    }
+
     /**
      * 启动预览
      */
@@ -228,9 +232,9 @@ public class CWCamera extends SurfaceView implements Camera.PreviewCallback, Sur
 
     @Override
     public void surfaceChanged(@NonNull SurfaceHolder surfaceHolder, int i, int i1, int i2) {
-        releaseCamera();
-        openCamera();
-        initCamera();
+//        releaseCamera();
+//        openCamera();
+//        initCamera();
     }
 
     @Override

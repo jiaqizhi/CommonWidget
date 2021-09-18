@@ -35,7 +35,16 @@ public class CameraUtils {
 
     private Camera mCamera;
 
+    /**
+     * 预览分辨率
+     */
+    private Camera.Size preSize;
+
     private CameraUtils() {
+    }
+
+    public Camera.Size getPreSize() {
+        return preSize;
     }
 
     /**
@@ -172,7 +181,7 @@ public class CameraUtils {
         int screenHeight = dms.widthPixels;
         float temp = 10f;
         List<Camera.Size> preSizes = getPreviewSizeList();
-        Camera.Size preSize = preSizes.get(0);
+        preSize = preSizes.get(0);
         Camera.Size tempSize;
         for (int i = 0; i < preSizes.size(); i++) {
             tempSize = preSizes.get(i);

@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.view.View;
 
 import com.huiyuenet.commonwidget.databinding.ActivityMainBinding;
+import com.huiyuenet.widgetlib.logs.LogUtils;
 import com.huiyuenet.widgetlib.view.camera.CWCamera;
 
 public class MainActivity extends Activity {
@@ -25,6 +26,7 @@ public class MainActivity extends Activity {
             @Override
             public void prepare() {
                 binding.mainCamera.startPreview();
+                LogUtils.d("width="+binding.mainCamera.getPreviewSize().width+",height="+binding.mainCamera.getPreviewSize().height+"--------------------------------");
             }
         });
     }
