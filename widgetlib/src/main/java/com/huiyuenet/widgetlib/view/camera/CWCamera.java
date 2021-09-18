@@ -35,6 +35,7 @@ public class CWCamera extends SurfaceView implements Camera.PreviewCallback, Sur
     private int screenHeight;
     private int screenWidth;
     private PreviewFrameListener previewFrameListener;
+    private CameraPrepareListener cameraPrepareListener;
     private CameraPZListener cameraPZListener;
     private boolean captrueing = false;
     private boolean isSupportAutoFocus = false;
@@ -64,6 +65,10 @@ public class CWCamera extends SurfaceView implements Camera.PreviewCallback, Sur
 
     public Camera getCamera() {
         return camera;
+    }
+
+    public void setCameraPrepareListener(CameraPrepareListener cameraPrepareListener) {
+        this.cameraPrepareListener = cameraPrepareListener;
     }
 
     /**
@@ -144,8 +149,10 @@ public class CWCamera extends SurfaceView implements Camera.PreviewCallback, Sur
             }
             //设置横竖屏参数
             CameraUtils.getInstance().setRotateOrientation(cameraid, context);
-
-            startPreview();
+            if (cameraPrepareListener != null) {
+                cameraPrepareListener.prepare();
+            }
+            //startPreview();
         } catch (Exception e) {
             e.printStackTrace();
             releaseCamera();
@@ -215,13 +222,15 @@ public class CWCamera extends SurfaceView implements Camera.PreviewCallback, Sur
             openCamera();
             initCamera();
         } else {
-            startPreview();
+            //startPreview();
         }
     }
 
     @Override
     public void surfaceChanged(@NonNull SurfaceHolder surfaceHolder, int i, int i1, int i2) {
-
+        releaseCamera();
+        openCamera();
+        initCamera();
     }
 
     @Override
@@ -247,5 +256,9 @@ public class CWCamera extends SurfaceView implements Camera.PreviewCallback, Sur
 
     public interface CameraPZListener {
         void getPZImg(Bitmap bmp);
+    }
+
+    public interface CameraPrepareListener {
+        void prepare ();
     }
 }
