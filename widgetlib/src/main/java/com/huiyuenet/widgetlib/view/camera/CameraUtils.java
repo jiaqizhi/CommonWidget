@@ -5,6 +5,7 @@ import android.content.res.Configuration;
 import android.graphics.ImageFormat;
 import android.hardware.Camera;
 import android.util.DisplayMetrics;
+import android.util.Size;
 
 import java.util.List;
 
@@ -192,6 +193,12 @@ public class CameraUtils {
                 preSize = tempSize;
             }
         }
+        mParameters.setPreviewSize(preSize.width, preSize.height);
+        mCamera.setParameters(mParameters);
+    }
+
+    public void setPreviewSize (Camera.Size size) {
+        preSize = size;
         mParameters.setPreviewSize(preSize.width, preSize.height);
         mCamera.setParameters(mParameters);
     }

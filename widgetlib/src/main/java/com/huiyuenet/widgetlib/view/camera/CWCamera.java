@@ -160,6 +160,37 @@ public class CWCamera extends SurfaceView implements Camera.PreviewCallback, Sur
 
     }
 
+    /**
+     * 设置指定分辨率，可自行获取系统支持的分辨率来进行设置
+     * @param size
+     */
+    public void initCamera(Camera.Size size) {
+        try {
+            camera.setPreviewDisplay(holder);
+            //设置最佳预览
+            CameraUtils.getInstance().setPreviewSize(size);
+            //设置生成照片的分辨率
+            List<Camera.Size> sizes = CameraUtils.getInstance().getPictureSizeList();
+            for (Camera.Size s : sizes) {
+                if (s.width == 1280 && s.height == 960) {
+                    CameraUtils.getInstance().setSaveSize(s);
+                    break;
+                }
+            }
+            //设置横竖屏参数
+            CameraUtils.getInstance().setRotateOrientation(cameraid, context);
+            if (cameraPrepareListener != null) {
+                cameraPrepareListener.prepare();
+            }
+            //startPreview();
+        } catch (Exception e) {
+            e.printStackTrace();
+            releaseCamera();
+        }
+
+    }
+
+
     public Camera.Size getPreviewSize () {
         return CameraUtils.getInstance().getPreSize();
     }
