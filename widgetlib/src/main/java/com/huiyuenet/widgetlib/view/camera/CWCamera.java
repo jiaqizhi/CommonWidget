@@ -38,7 +38,7 @@ public class CWCamera extends SurfaceView implements Camera.PreviewCallback, Sur
     private CameraPrepareListener cameraPrepareListener;
     private CameraPZListener cameraPZListener;
     private boolean captrueing = false;
-    private boolean isSupportAutoFocus = true;
+    private boolean isSupportAutoFocus = false;
 
     public CWCamera(Context context) {
         super(context);
@@ -50,7 +50,7 @@ public class CWCamera extends SurfaceView implements Camera.PreviewCallback, Sur
         TypedArray a = this.context.obtainStyledAttributes(attrs, R.styleable.VideoCameraView);
         cameraid = a.getInt(R.styleable.VideoCameraView_camera_id, Camera.CameraInfo.CAMERA_FACING_FRONT);
         holder = getHolder();
-        //isSupportAutoFocus = context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_AUTOFOCUS);
+        isSupportAutoFocus = context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_AUTOFOCUS);
 
         DisplayMetrics dms = context.getResources().getDisplayMetrics();
         screenWidth = dms.heightPixels;
@@ -106,8 +106,10 @@ public class CWCamera extends SurfaceView implements Camera.PreviewCallback, Sur
                 Bitmap bmp = ImageUtils.bytes2Bitmap(data);
 
                 //前置摄像头时，需要将照片旋转180度
-                if (cameraid == Camera.CameraInfo.CAMERA_FACING_FRONT) {
-                    bmp = ImageUtils.rotate(bmp, 180, 0, 0);
+                if (cameraid == Camera.CameraInfo.CAMERA_FACING_BACK) {
+                    bmp = ImageUtils.rotaingImageView(90, bmp);
+                } else {
+                    bmp = ImageUtils.rotaingImageView(-90, bmp);
                 }
 
                 if (cameraPZListener != null) {
@@ -153,7 +155,7 @@ public class CWCamera extends SurfaceView implements Camera.PreviewCallback, Sur
                 cameraPrepareListener.prepare();
             }
 
-            camera.autoFocus(this);
+
             //startPreview();
         } catch (Exception e) {
             e.printStackTrace();
@@ -206,6 +208,7 @@ public class CWCamera extends SurfaceView implements Camera.PreviewCallback, Sur
             camera.setPreviewCallback(this);
 
             if (isSupportAutoFocus) {
+                camera.autoFocus(this);
                 postDelayed(this, 2000);
             }
         }
@@ -219,7 +222,7 @@ public class CWCamera extends SurfaceView implements Camera.PreviewCallback, Sur
             camera.stopPreview();
             camera.setPreviewCallback(null);
             if (isSupportAutoFocus) {
-                //camera.cancelAutoFocus();
+                camera.cancelAutoFocus();
             }
         }
     }
