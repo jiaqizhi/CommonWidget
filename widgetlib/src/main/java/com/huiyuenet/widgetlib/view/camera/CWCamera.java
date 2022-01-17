@@ -38,7 +38,7 @@ public class CWCamera extends SurfaceView implements Camera.PreviewCallback, Sur
     private CameraPrepareListener cameraPrepareListener;
     private CameraPZListener cameraPZListener;
     private boolean captrueing = false;
-    private boolean isSupportAutoFocus = false;
+    private boolean isSupportAutoFocus = true;
 
     public CWCamera(Context context) {
         super(context);
@@ -204,6 +204,7 @@ public class CWCamera extends SurfaceView implements Camera.PreviewCallback, Sur
         if (camera != null) {
             camera.startPreview();
             camera.setPreviewCallback(this);
+
             if (isSupportAutoFocus) {
                 postDelayed(this, 2000);
             }
