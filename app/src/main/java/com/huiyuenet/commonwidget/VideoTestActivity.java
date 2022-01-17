@@ -10,8 +10,10 @@ import android.view.Display;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 import com.huiyuenet.commonwidget.databinding.ActivityVideoTestBinding;
+import com.huiyuenet.widgetlib.view.video.MediaUtils;
 import com.huiyuenet.widgetlib.view.video.VideoPlayView;
 
 public class VideoTestActivity extends Activity {
@@ -36,6 +38,18 @@ public class VideoTestActivity extends Activity {
                 videoHeight = height;
             }
         });
+        binding.video.setVideoStatusListener(new MediaUtils.onVideoStatusListener() {
+            @Override
+            public void onVideoLag() {
+                Toast.makeText(VideoTestActivity.this, "视频缓冲中", Toast.LENGTH_SHORT);
+            }
+
+            @Override
+            public void onVideoUnobstructed() {
+                Toast.makeText(VideoTestActivity.this, "视频开始播放", Toast.LENGTH_SHORT);
+            }
+        });
+
 
         //binding.video.getPopWindow().getScreenBtn().setVisibility(View.GONE);
     }

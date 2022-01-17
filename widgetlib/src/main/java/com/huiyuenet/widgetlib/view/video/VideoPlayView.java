@@ -172,6 +172,12 @@ public class VideoPlayView extends FrameLayout implements TextureView.SurfaceTex
 
     }
 
+    public void setVideoStatusListener (MediaUtils.onVideoStatusListener listener) {
+        if (listener == null)
+            return;
+        mediaUtils.setOnVideoStatusListener(listener);
+    }
+
     /**
      * 设置监听
      */

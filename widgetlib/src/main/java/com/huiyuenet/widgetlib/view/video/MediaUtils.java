@@ -16,7 +16,7 @@ import androidx.annotation.NonNull;
  */
 public class MediaUtils implements MediaPlayer.OnVideoSizeChangedListener, MediaPlayer.OnBufferingUpdateListener,
         MediaPlayer.OnCompletionListener, MediaPlayer.OnErrorListener, MediaPlayer.OnPreparedListener,
-        MediaPlayer.OnSeekCompleteListener{
+        MediaPlayer.OnSeekCompleteListener, MediaPlayer.OnInfoListener {
     /**
      * 播放器
      */
@@ -29,6 +29,7 @@ public class MediaUtils implements MediaPlayer.OnVideoSizeChangedListener, Media
     private onVideoBufferingUpdateListener onVideoBufferingUpdateListener;
     private onVideoPlayProgressListener onVideoPlayProgressListener;
     private onVideoSizeChangeListener  onVideoSizeChangeListener;
+    private onVideoStatusListener onVideoStatusListener;
 
     private final static int UPDATEBUFFERPROGRESS = 1;
     private final static int UPDATEVIDEOPROGRESS = 2;
@@ -73,6 +74,10 @@ public class MediaUtils implements MediaPlayer.OnVideoSizeChangedListener, Media
         this.onVideoSizeChangeListener = onVideoSizeChangeListener;
     }
 
+    public void setOnVideoStatusListener(MediaUtils.onVideoStatusListener onVideoStatusListener) {
+        this.onVideoStatusListener = onVideoStatusListener;
+    }
+
     /**
      * 视频总长度
      */
@@ -99,6 +104,7 @@ public class MediaUtils implements MediaPlayer.OnVideoSizeChangedListener, Media
         mediaPlayer.setOnErrorListener(this);
         mediaPlayer.setOnPreparedListener(this);
         mediaPlayer.setOnSeekCompleteListener(this);
+        mediaPlayer.setOnInfoListener(this);
     }
 
     /**
@@ -218,6 +224,21 @@ public class MediaUtils implements MediaPlayer.OnVideoSizeChangedListener, Media
 
     }
 
+    @Override
+    public boolean onInfo(MediaPlayer mp, int what, int extra) {
+        if (what == MediaPlayer.MEDIA_INFO_BUFFERING_END) {
+            if (onVideoStatusListener != null) {
+                onVideoStatusListener.onVideoUnobstructed();
+            }
+            return true;
+        } else if (what == MediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START || what == MediaPlayer.MEDIA_INFO_BUFFERING_START) {
+            if (onVideoStatusListener != null) {
+                onVideoStatusListener.onVideoLag();
+            }
+        }
+        return false;
+    }
+
     /**
      * 视频播放完成
      * @作者 liuzhiwei
@@ -261,5 +282,20 @@ public class MediaUtils implements MediaPlayer.OnVideoSizeChangedListener, Media
      */
     public interface onVideoPlayProgressListener {
         void onVideoPlayProgress(int duration, int currentPosition);
+    }
+
+    /**
+     * 视频播放状态
+     */
+    public interface onVideoStatusListener {
+        /**
+         * 视频卡住
+         */
+        void onVideoLag ();
+
+        /**
+         * 视频通畅
+         */
+        void onVideoUnobstructed ();
     }
 }

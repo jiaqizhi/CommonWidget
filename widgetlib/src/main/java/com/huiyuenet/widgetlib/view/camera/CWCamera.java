@@ -152,6 +152,8 @@ public class CWCamera extends SurfaceView implements Camera.PreviewCallback, Sur
             if (cameraPrepareListener != null) {
                 cameraPrepareListener.prepare();
             }
+
+            camera.autoFocus(this);
             //startPreview();
         } catch (Exception e) {
             e.printStackTrace();
