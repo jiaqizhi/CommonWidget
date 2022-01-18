@@ -9,6 +9,8 @@ import java.io.IOException;
 
 import androidx.annotation.NonNull;
 
+import com.huiyuenet.widgetlib.logs.LogUtils;
+
 /**
  * mediaPlayer工具类
  * @作者 liuzhiwei
@@ -226,12 +228,13 @@ public class MediaUtils implements MediaPlayer.OnVideoSizeChangedListener, Media
 
     @Override
     public boolean onInfo(MediaPlayer mp, int what, int extra) {
+        LogUtils.d("当前状态==" + what);
         if (what == MediaPlayer.MEDIA_INFO_BUFFERING_END) {
             if (onVideoStatusListener != null) {
                 onVideoStatusListener.onVideoUnobstructed();
             }
             return true;
-        } else if (what == MediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START || what == MediaPlayer.MEDIA_INFO_BUFFERING_START) {
+        } else if (what == MediaPlayer.MEDIA_INFO_BUFFERING_START) {
             if (onVideoStatusListener != null) {
                 onVideoStatusListener.onVideoLag();
             }

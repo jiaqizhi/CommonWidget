@@ -294,7 +294,7 @@ public class VideoPlayView extends FrameLayout implements TextureView.SurfaceTex
             viewWidth = rootView.getHeight();
             viewHeight = rootView.getWidth();
         }
-        LogUtils.d("viewWidth="+viewWidth+", viewHeight="+viewHeight);
+        //LogUtils.d("viewWidth="+viewWidth+", viewHeight="+viewHeight);
 
         Matrix matrix = new Matrix();
         //获得最佳缩放比

@@ -1,11 +1,14 @@
 package com.huiyuenet.commonwidget;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 
 import android.app.Activity;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.view.Display;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +16,7 @@ import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.huiyuenet.commonwidget.databinding.ActivityVideoTestBinding;
+import com.huiyuenet.widgetlib.logs.LogUtils;
 import com.huiyuenet.widgetlib.view.video.MediaUtils;
 import com.huiyuenet.widgetlib.view.video.VideoPlayView;
 
@@ -20,6 +24,18 @@ public class VideoTestActivity extends Activity {
     private ActivityVideoTestBinding binding;
     private int videoWidth, videoHeight;
     private boolean isCompletedZoom = false;
+
+    private Handler handler = new Handler(){
+        @Override
+        public void handleMessage(@NonNull Message msg) {
+            if (msg.what == 1) {
+
+                Toast.makeText(VideoTestActivity.this, "视频缓冲中", Toast.LENGTH_LONG).show();
+            } else if (msg.what == 2) {
+                Toast.makeText(VideoTestActivity.this, "视频开始播放", Toast.LENGTH_LONG).show();
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,12 +57,14 @@ public class VideoTestActivity extends Activity {
         binding.video.setVideoStatusListener(new MediaUtils.onVideoStatusListener() {
             @Override
             public void onVideoLag() {
-                Toast.makeText(VideoTestActivity.this, "视频缓冲中", Toast.LENGTH_SHORT);
+                handler.sendEmptyMessage(1);
+                LogUtils.d("视频缓冲中");
             }
 
             @Override
             public void onVideoUnobstructed() {
-                Toast.makeText(VideoTestActivity.this, "视频开始播放", Toast.LENGTH_SHORT);
+                handler.sendEmptyMessage(2);
+                LogUtils.d("视频开始播放");
             }
         });
 

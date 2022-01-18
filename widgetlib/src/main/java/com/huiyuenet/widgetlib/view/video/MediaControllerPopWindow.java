@@ -72,7 +72,7 @@ public class MediaControllerPopWindow extends PopupWindow {
         mMediaUtils.setOnVideoBufferingUpdateListener(new MediaUtils.onVideoBufferingUpdateListener() {
             @Override
             public void onVideoBufferingUpdate(int duration, int percent) {
-                LogUtils.d("视频总长度="+duration+",当前缓存进度="+percent);
+                //LogUtils.d("视频总长度="+duration+",当前缓存进度="+percent);
                 videoProgress.setSecondaryProgress(percent);
             }
         });
