@@ -15,6 +15,7 @@ import android.view.SurfaceView;
 
 import com.huiyuenet.widgetlib.R;
 import com.huiyuenet.widgetlib.logs.LogUtils;
+import com.huiyuenet.widgetlib.logs.StringUtils;
 
 import java.io.ByteArrayOutputStream;
 import java.util.List;
@@ -105,11 +106,20 @@ public class CWCamera extends SurfaceView implements Camera.PreviewCallback, Sur
                 camera.stopPreview();
                 Bitmap bmp = ImageUtils.bytes2Bitmap(data);
 
-                //前置摄像头时，需要将照片旋转180度
-                if (cameraid == Camera.CameraInfo.CAMERA_FACING_BACK) {
-                    bmp = ImageUtils.rotaingImageView(90, bmp);
+                //照片旋转
+                String brand = android.os.Build.BRAND;
+                if (StringUtils.equalsIgnoreCase("HUAWEI", brand)) {
+                    if (cameraid == Camera.CameraInfo.CAMERA_FACING_BACK) {
+                        bmp = ImageUtils.rotaingImageView(0, bmp);
+                    } else {
+                        bmp = ImageUtils.rotaingImageView(180, bmp);
+                    }
                 } else {
-                    bmp = ImageUtils.rotaingImageView(-90, bmp);
+                    if (cameraid == Camera.CameraInfo.CAMERA_FACING_BACK) {
+                        bmp = ImageUtils.rotaingImageView(90, bmp);
+                    } else {
+                        bmp = ImageUtils.rotaingImageView(-90, bmp);
+                    }
                 }
 
                 if (cameraPZListener != null) {
