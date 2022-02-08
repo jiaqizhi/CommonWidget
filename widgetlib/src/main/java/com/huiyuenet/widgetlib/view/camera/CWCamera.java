@@ -108,7 +108,7 @@ public class CWCamera extends SurfaceView implements Camera.PreviewCallback, Sur
 
                 //照片旋转
                 String brand = android.os.Build.BRAND;
-                if (StringUtils.equalsIgnoreCase("HUAWEI", brand)) {
+                if (StringUtils.equalsIgnoreCase("HUAWEI", brand) || StringUtils.equalsIgnoreCase("vivo", brand)) {
                     if (cameraid == Camera.CameraInfo.CAMERA_FACING_BACK) {
                         bmp = ImageUtils.rotaingImageView(0, bmp);
                     } else {
