@@ -68,7 +68,8 @@ public class VideoTestActivity extends Activity {
             }
         });
 
-
+        String brand = android.os.Build.BRAND;
+        LogUtils.d("手机标识=="+brand);
         //binding.video.getPopWindow().getScreenBtn().setVisibility(View.GONE);
     }
 

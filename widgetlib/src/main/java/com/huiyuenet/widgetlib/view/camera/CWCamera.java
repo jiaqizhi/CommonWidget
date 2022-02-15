@@ -108,19 +108,34 @@ public class CWCamera extends SurfaceView implements Camera.PreviewCallback, Sur
 
                 //照片旋转
                 String brand = android.os.Build.BRAND;
-                if (StringUtils.equalsIgnoreCase("HUAWEI", brand) || StringUtils.equalsIgnoreCase("vivo", brand)) {
-                    if (cameraid == Camera.CameraInfo.CAMERA_FACING_BACK) {
-                        bmp = ImageUtils.rotaingImageView(0, bmp);
-                    } else {
-                        bmp = ImageUtils.rotaingImageView(180, bmp);
-                    }
-                } else {
+
+                if (StringUtils.equalsIgnoreCase("Redmi", brand)) {
+
                     if (cameraid == Camera.CameraInfo.CAMERA_FACING_BACK) {
                         bmp = ImageUtils.rotaingImageView(90, bmp);
                     } else {
                         bmp = ImageUtils.rotaingImageView(-90, bmp);
                     }
+                } else {
+                    if (cameraid == Camera.CameraInfo.CAMERA_FACING_BACK) {
+                        bmp = ImageUtils.rotaingImageView(0, bmp);
+                    } else {
+                        bmp = ImageUtils.rotaingImageView(180, bmp);
+                    }
                 }
+//                if (StringUtils.equalsIgnoreCase("HUAWEI", brand) || StringUtils.equalsIgnoreCase("vivo", brand)) {
+//                    if (cameraid == Camera.CameraInfo.CAMERA_FACING_BACK) {
+//                        bmp = ImageUtils.rotaingImageView(0, bmp);
+//                    } else {
+//                        bmp = ImageUtils.rotaingImageView(180, bmp);
+//                    }
+//                } else {
+//                    if (cameraid == Camera.CameraInfo.CAMERA_FACING_BACK) {
+//                        bmp = ImageUtils.rotaingImageView(90, bmp);
+//                    } else {
+//                        bmp = ImageUtils.rotaingImageView(-90, bmp);
+//                    }
+//                }
 
                 if (cameraPZListener != null) {
                     cameraPZListener.getPZImg(bmp);
