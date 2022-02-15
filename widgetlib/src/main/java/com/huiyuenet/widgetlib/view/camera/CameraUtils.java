@@ -99,13 +99,6 @@ public class CameraUtils {
     public void setRotateOrientation(int cameraid, Context context) {
         if (mCamera != null) {
             mParameters = mCamera.getParameters();
-//            if (context.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {//竖屏
-//                mCamera.setDisplayOrientation(90);
-//                mParameters.setRotation(90);
-//            } else {//横屏
-//                mCamera.setDisplayOrientation(0);
-//                mParameters.setRotation(0);
-//            }
             if (cameraid == Camera.CameraInfo.CAMERA_FACING_FRONT) {
                 mParameters.setRotation(270);
             } else {

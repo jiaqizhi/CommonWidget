@@ -35,8 +35,10 @@ import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Shader;
+import android.graphics.YuvImage;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.hardware.Camera;
 import android.media.ExifInterface;
 import android.os.Build;
 import android.renderscript.Allocation;
@@ -633,6 +635,32 @@ public final class ImageUtils {
         Bitmap resizedBitmap = Bitmap.createBitmap(bitmap, 0, 0,
                 bitmap.getWidth(), bitmap.getHeight(), matrix, true);
         return resizedBitmap;
+    }
+
+    /**
+     * 将帧数据转换为位图
+     * @param data
+     * @return 已进行异常处理，异常返回null
+     */
+    public static Bitmap bitmap565(byte[] data, Camera.Parameters parameters) {
+        try {
+            int width = parameters.getPreviewSize().width;
+            int height = parameters.getPreviewSize().height;
+            YuvImage yuv = new YuvImage(data, parameters.getPreviewFormat(), width, height, null);
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            yuv.compressToJpeg(new Rect(0, 0, width, height), 100, out);
+            byte[] b = out.toByteArray();
+            //类型为RGB_565的照片
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inPreferredConfig = Bitmap.Config.RGB_565;
+            //options.inSampleSize = 2;//缩小一倍的宽高，降低3/4的分辨率
+            Bitmap bm = BitmapFactory.decodeByteArray(b, 0, b.length, options);
+            return bm;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+
     }
 
     /**

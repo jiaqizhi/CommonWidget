@@ -40,6 +40,7 @@ public class CWCamera extends SurfaceView implements Camera.PreviewCallback, Sur
     private CameraPZListener cameraPZListener;
     private boolean captrueing = false;
     private boolean isSupportAutoFocus = false;
+    private byte[] pic;
 
     public CWCamera(Context context) {
         super(context);
@@ -104,25 +105,30 @@ public class CWCamera extends SurfaceView implements Camera.PreviewCallback, Sur
             public void onPictureTaken(byte[] data, Camera camera) {
                 captrueing = false;
                 camera.stopPreview();
-                Bitmap bmp = ImageUtils.bytes2Bitmap(data);
+                Bitmap bmp = ImageUtils.bitmap565(pic, camera.getParameters());
+                if (cameraid == Camera.CameraInfo.CAMERA_FACING_BACK) {
+                    bmp = ImageUtils.rotaingImageView(90, bmp);
+                } else {
+                    bmp = ImageUtils.rotaingImageView(270, bmp);
+                }
 
                 //照片旋转
-                String brand = android.os.Build.BRAND;
-
-                if (StringUtils.equalsIgnoreCase("Redmi", brand)) {
-
-                    if (cameraid == Camera.CameraInfo.CAMERA_FACING_BACK) {
-                        bmp = ImageUtils.rotaingImageView(90, bmp);
-                    } else {
-                        bmp = ImageUtils.rotaingImageView(-90, bmp);
-                    }
-                } else {
-                    if (cameraid == Camera.CameraInfo.CAMERA_FACING_BACK) {
-                        bmp = ImageUtils.rotaingImageView(0, bmp);
-                    } else {
-                        bmp = ImageUtils.rotaingImageView(180, bmp);
-                    }
-                }
+//                String brand = android.os.Build.BRAND;
+//
+//                if (StringUtils.equalsIgnoreCase("Redmi", brand)) {
+//
+//                    if (cameraid == Camera.CameraInfo.CAMERA_FACING_BACK) {
+//                        bmp = ImageUtils.rotaingImageView(90, bmp);
+//                    } else {
+//                        bmp = ImageUtils.rotaingImageView(-90, bmp);
+//                    }
+//                } else {
+//                    if (cameraid == Camera.CameraInfo.CAMERA_FACING_BACK) {
+//                        bmp = ImageUtils.rotaingImageView(0, bmp);
+//                    } else {
+//                        bmp = ImageUtils.rotaingImageView(180, bmp);
+//                    }
+//                }
 //                if (StringUtils.equalsIgnoreCase("HUAWEI", brand) || StringUtils.equalsIgnoreCase("vivo", brand)) {
 //                    if (cameraid == Camera.CameraInfo.CAMERA_FACING_BACK) {
 //                        bmp = ImageUtils.rotaingImageView(0, bmp);
@@ -278,6 +284,7 @@ public class CWCamera extends SurfaceView implements Camera.PreviewCallback, Sur
 
     @Override
     public void onPreviewFrame(byte[] bytes, Camera camera) {
+        pic = bytes;
         if (previewFrameListener != null)
             previewFrameListener.getImgData(bytes, camera);
     }
