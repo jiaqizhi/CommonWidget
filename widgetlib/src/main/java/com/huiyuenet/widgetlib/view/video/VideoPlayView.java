@@ -42,6 +42,7 @@ public class VideoPlayView extends FrameLayout implements TextureView.SurfaceTex
     private String url;
     private onVideoSizeChangeListener onVideoSizeChangeListener;
     private onVideoCompletionListener onVideoCompletionListener;
+    private onErrorListener onErrorListener;
     private SurfaceTexture mSurface;
 
     private int videoWidth;
@@ -101,6 +102,10 @@ public class VideoPlayView extends FrameLayout implements TextureView.SurfaceTex
 
     public void setOnVideoCompletionListener(VideoPlayView.onVideoCompletionListener onVideoCompletionListener) {
         this.onVideoCompletionListener = onVideoCompletionListener;
+    }
+
+    public void setOnErrorListener(VideoPlayView.onErrorListener onErrorListener) {
+        this.onErrorListener = onErrorListener;
     }
 
     public int getScreenStatus() {
@@ -197,6 +202,9 @@ public class VideoPlayView extends FrameLayout implements TextureView.SurfaceTex
             @Override
             public void onVideoError(MediaPlayer mp, int what, int extra) {
                 LogUtils.d("播放错误===" + extra);
+                if (onErrorListener != null) {
+                    onErrorListener.onError(what, extra);
+                }
             }
         });
 
@@ -387,5 +395,9 @@ public class VideoPlayView extends FrameLayout implements TextureView.SurfaceTex
     public interface onVideoCompletionListener {
         void onVideoCompletion();
     }
+    public interface onErrorListener {
+        void onError(int what, int extra);
+    }
+
 
 }
