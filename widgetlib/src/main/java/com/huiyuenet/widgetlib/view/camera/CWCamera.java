@@ -41,6 +41,7 @@ public class CWCamera extends SurfaceView implements Camera.PreviewCallback, Sur
     private boolean captrueing = false;
     private boolean isSupportAutoFocus = false;
     private byte[] pic;
+    private int orientation;
 
     public CWCamera(Context context) {
         super(context);
@@ -51,6 +52,7 @@ public class CWCamera extends SurfaceView implements Camera.PreviewCallback, Sur
         this.context = context;
         TypedArray a = this.context.obtainStyledAttributes(attrs, R.styleable.VideoCameraView);
         cameraid = a.getInt(R.styleable.VideoCameraView_camera_id, Camera.CameraInfo.CAMERA_FACING_FRONT);
+        orientation = a.getInt(R.styleable.VideoCameraView_orientation, 0);
         holder = getHolder();
         isSupportAutoFocus = context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_AUTOFOCUS);
 
@@ -155,7 +157,7 @@ public class CWCamera extends SurfaceView implements Camera.PreviewCallback, Sur
     //todo 第一步，创建camera对象，初始化执行一次，此时摄像头被持有
     public void openCamera() {
         try {
-            camera = CameraUtils.getInstance().openCamera(cameraid);
+            camera = CameraUtils.getInstance().openCamera(cameraid, orientation);
         } catch (Exception e) {
             e.printStackTrace();
             if (camera != null) {

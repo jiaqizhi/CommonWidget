@@ -64,25 +64,30 @@ public class CameraUtils {
         return mInstance;
     }
 
-    public Camera openCamera() {
+    public Camera openCamera(int orientation) {
         // 0 表示开启后置相机
-        return openCamera(0);
+        return openCamera(0, orientation);
     }
 
-    public Camera openCamera(int id) {
+    public Camera openCamera(int id, int orientation) {
         if (mCamera == null) {
             mCamera = Camera.open(id);
         }
-        setProperty();
+        setProperty(orientation);
         return mCamera;
     }
 
     /**
-     * 相机属性设置
+     * 相机属性设置  0==竖屏  1==横屏
      */
-    private void setProperty() {
+    private void setProperty(int orientation) {
         //设置相机预览页面旋转90°，（默认是横屏）
-        mCamera.setDisplayOrientation(90);
+        if (orientation == 0) {
+            mCamera.setDisplayOrientation(90);
+        } else {
+            mCamera.setDisplayOrientation(0);
+        }
+
         mParameters = mCamera.getParameters();
         //设置将保存的图片旋转90°（竖着拍摄的时候）
         mParameters.setRotation(90);

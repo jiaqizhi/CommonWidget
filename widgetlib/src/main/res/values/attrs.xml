@@ -5,5 +5,9 @@
             <enum name="f" value="1"/>
             <enum name="b" value="0"/>
         </attr>
+        <attr name="orientation" format="enum">
+            <enum name="h" value="1"/>
+            <enum name="v" value="0"/>
+        </attr>
     </declare-styleable>
 </resources>
